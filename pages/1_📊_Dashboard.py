@@ -40,7 +40,9 @@ year_list = ss["year_list"]
 st.header("XIPE Dashboard")
 st.write("""To use the tool, please fill in all information requested on this page. This is all that is needed
          to make a first estimation of emission changes. All variables used in the calculations can be adjused in the 'Variables' 
-         pages.""") 
+         pages.""")
+st.write("""The estimated changes in emissions due to the introdiction of shared mobility are displayed at the bottom of this
+         dashboard.""") 
 
 
 ######### Select country and save in session state and df

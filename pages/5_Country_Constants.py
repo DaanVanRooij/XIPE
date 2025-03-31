@@ -41,7 +41,7 @@ col_format.update({"Year" : st.column_config.NumberColumn(format = "%d")})
 
 
 # display dataframe in app
-st.subheader('Average CO2 emissions per km from new passenger cars \n Source: EuroStat')
+st.subheader(':flag-eu: Average CO2 emissions per km from new passenger cars \n Source: EuroStat')
 st.write("""Up to 2020 the NEDC measuring method was used, which was replaced by the WLTP from 2021 onwards. NEDC and WLTP values 
          underestimate real world CO2 emission by resepectively 40% and 14%. These factors are included to calculate the average 
          Tank-to-Wheel values for ICE cars.""")
