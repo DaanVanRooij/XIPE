@@ -36,6 +36,12 @@ year_list = ss["year_list"]
 ###################### City inputs ############################################
 ###############################################################################
 
+st.header("XIPE Dashboard")
+st.write("""To use the tool, please fill in all information requested on this page. This is all that is needed
+         to make a first estimation of emission changes. All variables used in the calculations can be adjused in the 'Variables' 
+         pages.""") 
+
+
 ######### Select country and save in session state and df
 # initiate session state widget and save in session state
 country = st.selectbox(
