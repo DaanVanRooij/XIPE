@@ -543,7 +543,8 @@ column_config_total = {
 # Title and explanation
 st.header("Estimated Emission Change")
 st.write("""The tables below show the emission changes due to the introduction of shared mobility. The first table shows the changes per shared mode,
-         the second table the total values per day, year and per 1000 inhabitants""")
+         the second table the total values per day, year and per 1000 inhabitants.""")
+st.write(":green[Green cells] are a decrease in emissions, :red[red cells] are an increase in emissions and :yellow[yellow cells] have no changes.")
 st.subheader("Estimated emission change per shared mode")
 st.dataframe(styled_df_presentation,
              hide_index=True,
