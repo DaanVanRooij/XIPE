@@ -476,9 +476,9 @@ avg_co2_lca.loc[len(avg_co2_lca)] = avg_co2_lca_nms
 #######  Table presentation ####### 
 
 # sum the emission changes over the base nms types
-other_name = ss.shared_modes["shared_modes"].values[4]
-df_presentation = pd.DataFrame(columns=["Estimate CO2 change", "Car","Bike", "Moped", "eScooter", other_name])
-df_presentation.insert(0, "",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle (kg/day)", "TOTAL (kg/day)"])
+
+df_presentation = pd.DataFrame(columns=[ss.nms_types])
+df_presentation.insert(0, "Estimated CO2 change",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle (kg/day)", "TOTAL (kg/day)"])
 i=0
 for types in ss.nms_types:
     i+=1
