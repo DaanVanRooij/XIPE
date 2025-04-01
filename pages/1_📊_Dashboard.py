@@ -511,7 +511,8 @@ for types in ss.nms_types:
     lca_total = sum_lca.sum()
     df_presentation1.loc[2, types] = lca_total
 
-df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
+df_presentation1.iloc[3, 1:] = df_presentation1.iloc[1:, 1:].sum()
+#df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
 
 # Create table with total values
 df_presentation_total = pd.DataFrame(columns=["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"])
@@ -544,7 +545,7 @@ def color_positive_negative(val):
 
 # Apply style to all numeric columns
 styled_df_presentation = df_presentation.style.map(color_positive_negative, subset=df_presentation.columns[1:])
-styled_df_presentation1 = df_presentation1.style.map(color_positive_negative, subset=df_presentation1.columns[2:])
+styled_df_presentation1 = df_presentation1.style.map(color_positive_negative, subset=df_presentation1.columns[1:])
 styled_df_presentation_total = df_presentation_total.style.map(color_positive_negative, subset=df_presentation_total.columns[1:])
 
 # configure numbers to be two decimals
