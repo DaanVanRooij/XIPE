@@ -571,11 +571,11 @@ st.write("""The tables below show the emission changes due to the introduction o
          the second table the total values per day, year and per 1000 inhabitants.""")
 st.write(":green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.")
 st.subheader("Estimated emission change per shared mode")
-#st.dataframe(styled_df_presentation1,
-#             hide_index=True,
-#             column_config=column_config1,
-#             use_container_width=True
-#             )
+st.dataframe(styled_df_presentation1,
+             hide_index=True,
+             column_config=column_config1,
+             use_container_width=True
+             )
 
 st.dataframe(styled_df_presentation,
              hide_index=True,
