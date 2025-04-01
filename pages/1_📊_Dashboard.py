@@ -515,7 +515,7 @@ df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
 
 # Create table with total values
 df_presentation_total = pd.DataFrame(columns=["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"])
-df_presentation_total.insert(0, "Estimated CO2 reduction",["kg/day", "ton/year", "ton/year/1,000 inhabitants"])
+df_presentation_total.insert(0, "Estimated CO2 change",["kg/day", "ton/year", "ton/year/1,000 inhabitants"])
 for i in range(0,4):
     df_presentation_total.iloc[0,i+1] = df_presentation.iloc[i, 1:].sum()
 
@@ -544,7 +544,7 @@ def color_positive_negative(val):
 
 # Apply style to all numeric columns
 styled_df_presentation = df_presentation.style.map(color_positive_negative, subset=df_presentation.columns[1:])
-styled_df_presentation1 = df_presentation1.style.map(color_positive_negative, subset=df_presentation1.columns[1:])
+styled_df_presentation1 = df_presentation1.style.map(color_positive_negative, subset=df_presentation1.columns[2:])
 styled_df_presentation_total = df_presentation_total.style.map(color_positive_negative, subset=df_presentation_total.columns[1:])
 
 # configure numbers to be two decimals
