@@ -39,9 +39,11 @@ def save_edits(old_ss, edited_ss):
 st.header("Traditional Modes Variables")
 st.write("""On this page the variables and factors of the traditional modes are displayed per mode. All variables on this page have default 
          values displayed. If the user has specific variable values they can fill these in the User Input column, this will override 
-         the default values in the calculations.""")
-st.write("""Calculations will use the whole User Input column. Therefore, when using user input be sure to fill in all user input cells, 
-         copy default values where needed.""")
+         the default values in the calculations.
+         \n**Calculations will use the whole User Input column. Therefore, when using user input be sure to fill in all user input cells, 
+         copy default values where needed.**
+         \nChanges on the Variables pages will directly change the Estimated Emission Change tables displayed on the Dashboard page.""")
+
 st.warning("Don't forget to click the save buttons to save the data in the table.") 
 
 # Display General variables table

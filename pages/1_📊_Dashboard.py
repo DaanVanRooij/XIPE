@@ -38,11 +38,12 @@ year_list = ss["year_list"]
 ###############################################################################
 
 st.header("XIPE Dashboard")
-st.write("""To use the tool, please fill in all information requested on this page. This is all that is needed
-         to make a first estimation of emission changes. All variables used in the calculations can be adjused in the 'Variables' 
-         pages.""")
-st.write("""The estimated changes in emissions due to the introdiction of shared mobility are displayed at the bottom of this
-         dashboard.""") 
+st.write("""To use the tool, please fill in all information requested on this page. The information requested on this page is all that is needed
+         to make a first estimation of emission changes.
+         \n **Do you want to make an estimation using your own emission factors or other specific variables? A more detailed analysis can be performed 
+         by changing specific variables, all variables used in the calculations can be adjused in the 'Variables' pages, which can be accessed by using the menu on the left.**  
+         \nThe estimated changes in emissions due to the introdiction of shared mobility are displayed at the bottom of this
+         dashboard.""")
 
 
 ######### Select country and save in session state and df
@@ -477,10 +478,9 @@ avg_co2_lca.loc[len(avg_co2_lca)] = avg_co2_lca_nms
 
 # sum the emission changes over the base nms types
 df_presentation = pd.DataFrame(columns=ss.nms_types)
-df_presentation.insert(0, "",["Estimated CO2 change Tank-to-Wheel (kg/day)", "Estimated CO2 change Well-to-Tank (kg/day)", "Estimated additional life-cycle CO2 change (kg/day)", "Estimated CO2 change TOTAL (kg/day)"])
-i=0
+df_presentation.insert(0, "Estimated CO2 change",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle emissions (kg/day)", "TOTAL (kg/day)"])
+
 for types in ss.nms_types:
-    i+=1
     # CO2 use phase
     sum = df_results.filter(regex=types.lower()).sum(axis=1)
     ttw_total = sum.iloc[0] + sum.iloc[2]
@@ -493,25 +493,6 @@ for types in ss.nms_types:
     df_presentation.loc[2, types] = lca_total
 
 df_presentation.iloc[3, 1:] = df_presentation.iloc[0:3, 1:].sum()
-
-# sum the emission changes over the base nms types
-df_presentation1 = pd.DataFrame(columns=ss.nms_types)
-df_presentation1.insert(0, "Estimated CO2 change",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle (kg/day)", "TOTAL (kg/day)"])
-i=0
-for types in ss.nms_types:
-    i+=1
-    # CO2 use phase
-    sum = df_results.filter(regex=types.lower()).sum(axis=1)
-    ttw_total = sum.iloc[0] + sum.iloc[2]
-    wtt_total = sum.iloc[1] + sum.iloc[3]
-    df_presentation1.loc[0, types] = ttw_total
-    df_presentation1.loc[1, types] = wtt_total
-    # CO2 LCA
-    sum_lca = avg_co2_lca.filter(regex=types.lower()).sum(axis=1)
-    lca_total = sum_lca.sum()
-    df_presentation1.loc[2, types] = lca_total
-
-df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
 
 # Create table with total values
 df_presentation_total = pd.DataFrame(columns=["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"])
@@ -544,38 +525,26 @@ def color_positive_negative(val):
 
 # Apply style to all numeric columns
 styled_df_presentation = df_presentation.style.map(color_positive_negative, subset=df_presentation.columns[1:])
-styled_df_presentation1 = df_presentation1.style.map(color_positive_negative, subset=df_presentation1.columns[1:])
 styled_df_presentation_total = df_presentation_total.style.map(color_positive_negative, subset=df_presentation_total.columns[1:])
 
-# configure numbers to be two decimals
 column_config = {
     col: st.column_config.NumberColumn(col, format="%.2f")
-    for col in ss.nms_types
-}
-
-column_config1 = {
-    col: st.column_config.NumberColumn(col, format="%.2f")
-    for col in df_presentation1.columns
+    for col in df_presentation.columns[1:]
 }
 
 column_config_total = {
     col: st.column_config.NumberColumn(col, format="%.2f")
-    for col in ["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"]
+    for col in df_presentation_total.columns[1:]
 }
-
 
 # present result tables
 # Title and explanation
 st.header("Estimated Emission Change")
 st.write("""The tables below show the emission changes due to the introduction of shared mobility. The first table shows the changes per shared mode,
-         the second table the total values per day, year and per 1000 inhabitants.""")
-st.write(":green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.")
+         the second table the total values per day, year and per 1000 inhabitants.
+         :green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.
+         \nPlease remember, you can recalculate the emission changes using your own emission factors or other variables by accessing the 'Variables' pages accessible on the left!""")
 st.subheader("Estimated emission change per shared mode")
-st.dataframe(styled_df_presentation1,
-             hide_index=True,
-             column_config=column_config1,
-             use_container_width=True
-             )
 
 st.dataframe(styled_df_presentation,
              hide_index=True,
