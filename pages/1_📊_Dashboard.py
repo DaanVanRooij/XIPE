@@ -511,13 +511,12 @@ for types in ss.nms_types:
     lca_total = sum_lca.sum()
     df_presentation1.loc[2, types] = lca_total
 
-df_presentation1.iloc[3, 1:] = df_presentation1.iloc[1:, 1:].sum()
-#df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
+df_presentation1.iloc[3, 1:] = df_presentation1.iloc[0:3, 1:].sum()
 
 # Create table with total values
 df_presentation_total = pd.DataFrame(columns=["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"])
 df_presentation_total.insert(0, "Estimated CO2 change",["kg/day", "ton/year", "ton/year/1,000 inhabitants"])
-for i in range(0,4):
+for i in range(1,5):
     df_presentation_total.iloc[0,i+1] = df_presentation.iloc[i, 1:].sum()
 
 df_presentation_total.iloc[1,1:] = df_presentation_total.iloc[0,1:] / 1000 * 365.25
