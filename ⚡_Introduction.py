@@ -43,12 +43,15 @@ st.write("Version: 1.0")
 st.write("Published: 2024")
 
 
-# Load country specific data from csv
+# Load country specific data from csv's
 car_co2 = pd.read_csv("data/co2_emissions_new_cars_EU.csv")
+car_acea = pd.read_csv("data/acea_vehicle_data.csv")
 
 if "car_co2" not in ss:
     ss.car_co2 = car_co2
 
+if "car_acea" not in ss:
+    ss.car_acea = car_acea
 
 #####################################################################################################################################################################
 ###### initialise general session states ###########################################################################################################################
