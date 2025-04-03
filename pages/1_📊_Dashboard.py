@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 from streamlit import session_state as ss
-from streamlit_extras.grid import grid
+import plotly.express as px
 
 
 # Tells streamlit that all of your session state values 
@@ -71,19 +70,65 @@ inhabitants = st.number_input(
 )
 
 ### Select average age car fleet and save index in session state 
-car_year = st.selectbox(
-    "Average manufacturing year of the car fleet:",
-    year_list,
-    key="car_year"
-)
+#car_year = st.selectbox(
+#    "Average manufacturing year of the car fleet:",
+#    year_list,
+#    key="car_year"
+#)
 
 # Percentage diesel in ICE car fleet and save in session state 
-diesel_perc = st.slider("Diesel percentage of the ICE car fleet", 
-                        min_value=0, 
-                        max_value=100,
-                        step=1,
-                        key="diesel_perc" 
-)
+#diesel_perc = st.slider("Diesel percentage of the ICE car fleet", 
+#                        min_value=0, 
+#                        max_value=100,
+#                        step=1,
+#                        key="diesel_perc" 
+#)
+
+# get values for vehicle age and fuel shares from dataframe imported in introduction
+# car age
+car_age = ss.car_acea.loc[ss.car_acea["country"] == ss.country, "average_age_acea"].values[0]
+
+# fuel distribution of cars based on country
+perc_petrol = ss.car_acea.loc[ss.car_acea["country"] == ss.country, "perc_petrol"].values[0]
+perc_diesel = ss.car_acea.loc[ss.car_acea["country"] == ss.country, "perc_diesel"].values[0]
+perc_ev = ss.car_acea.loc[ss.car_acea["country"] == ss.country, "perc_ev"].values[0]
+
+# other is all minus petrol, diesel and EV
+perc_other = 1-perc_petrol-perc_diesel-perc_ev
+
+# calculate construction year of average car, used to find average emission values from country constants
+if ss.var_general.at[2, "user_input"] == 0.0:
+    car_year = round(2024 - ss.var_general.at[2, "default"],0)
+else:
+    car_year = round(2024 - ss.var_general.at[2, "user_input"],0)
+
+#collect data for pie chart
+pie_data = {"Fuel": ["Petrol", "Diesel", "EV", "Other"], "Values":[perc_petrol, perc_diesel, perc_ev, perc_other]}
+
+# Preserve category order
+pie_data['Fuel'] = pd.Categorical(pie_data['Fuel'], categories=pie_data['Fuel'], ordered=True)
+
+# Create Pie Chart
+fig = px.pie(pie_data, names="Fuel", values='Values', title=f"Share of cars by fuel in {ss.country} (ACEA)", 
+             category_orders={"Fuel": pie_data["Fuel"].tolist()}) # Explicit order
+
+# Display in Streamlit
+a, b = st.columns([1,1])
+with a:
+    st.write("")
+    st.write("")
+    if ss.country == "Bulgaria" or ss.country == "Malta":
+        st.metric(f"**The average car age in {ss.country} is**", f"{car_age} years*")
+        st.write(f"\* *ACEA has no data available for {ss.country}, therefore the average EU value is used. Same for the share of cars by fuel.*")
+    else:
+        st.metric(f"**The average car age in {ss.country} is**", f"{car_age} years")
+    st.write("Replacing an older car fleet with new shared mobility modes has a higher impact on the emissions because older cars are in "
+    "general more polluting.")
+    st.markdown("The type of fuel is used to estimate savings in NOx en PM emissions. As with all variables, these can be"
+    "replaced with your own values in the 'Variables' pages.")
+with b:
+    st.plotly_chart(fig)
+
 
 ###################################################################################
 ######### City modal split and trip distance editable table #######################
@@ -244,9 +289,13 @@ st.button("Save Data", type="primary", on_click=save_edits)
 ##########################################################################################
 
 ### General Variables
-# get default value based on country selected in dashboard and include in dataframe
+# get default values based on country selected in dashboard and include in dataframe
 default_elec_co2 = ss.elec_co2_country.loc[0, ss.country]
 ss.var_general.at[0, "default"] = default_elec_co2
+ss.var_general.at[2, "default"] = car_age
+ss.var_general.at[3, "default"] = perc_petrol * 100
+ss.var_general.at[4, "default"] = perc_diesel * 100
+ss.var_general.at[5, "default"] = perc_ev * 100
 
 ### Private Car Variables
 # get default value based on country and average car year selected in dashboard
@@ -254,8 +303,8 @@ ss.var_general.at[0, "default"] = default_elec_co2
 # values <= 2020 are NEDC values and > 2020 are WLTP measurements
 # NEDC and WLTP values underestimate real world CO2 emission by resepectively 40% and 14%, this is accounted for in the calculation below
 
-default_co2_car = ss.car_co2.loc[(max(year_list) - ss.car_year) ,ss.country]
-if ss.car_year <= 2020:
+default_co2_car = ss.car_co2.loc[(max(year_list) - car_year) ,ss.country]
+if car_year <= 2020:
     default_co2_car = default_co2_car *1.4
 else:
     default_co2_car = default_co2_car * 1.14
@@ -341,6 +390,8 @@ df_var_gen["variable"] = df_var_gen["variable"].str.strip()
 df_var_gen["user_input"] = np.where(df_var_gen["user_input"] == 0, df_var_gen["default"], df_var_gen["user_input"])  # Replace zeros
 df_var_gen = df_var_gen.drop(columns=["default"])  # Drop defaults
 df_var_gen = df_var_gen.rename(columns={"user_input":"general"})  # Rename columns
+
+
 
 # Calculate the number of vehicles from the dashboard table for Shared Mobility
 number_ICEcar = ss.shared_modes.num_veh[0] * ((100-ss.shared_modes.perc_EV[0])/100)
@@ -474,6 +525,22 @@ emission_fact_lca_nms = df_var_nms.iloc[6, 1:].reset_index(drop=True)
 avg_co2_lca_nms = (emission_fact_lca_nms.values * total_km_travelled.values)/1000
 avg_co2_lca.loc[len(avg_co2_lca)] = avg_co2_lca_nms
 
+
+####### NOx and PM use phase #########
+# NOx calculations
+emission_fact_nox = df_var_trad.iloc[1, 1:].reset_index(drop=True)
+avg_nox = decreased_distance.mul((emission_fact_nox/1000), axis=0)
+emission_fact_nox_nms = df_var_nms.iloc[3, 1:].reset_index(drop=True)
+avg_nox_nms = (emission_fact_nox_nms.values * total_km_travelled.values)/1000
+avg_nox.loc[len(avg_nox)] = avg_nox_nms
+
+# PM calculations
+emission_fact_pm = df_var_trad.iloc[2, 1:].reset_index(drop=True)
+avg_pm = decreased_distance.mul((emission_fact_pm/1000), axis=0)
+emission_fact_pm_nms = df_var_nms.iloc[4, 1:].reset_index(drop=True)
+avg_pm_nms = (emission_fact_pm_nms.values * total_km_travelled.values)/1000
+avg_pm.loc[len(avg_pm)] = avg_pm_nms
+
 #######  Table presentation ####### 
 
 # sum the emission changes over the base nms types
@@ -494,6 +561,19 @@ for types in ss.nms_types:
 
 df_presentation.iloc[3, 1:] = df_presentation.iloc[0:3, 1:].sum()
 
+df_presentation_air = pd.DataFrame(columns=ss.nms_types)
+df_presentation_air.insert(0, "Estimated air quality emission change",["NOx (g/day)", "PM (g/day)"])
+
+for types in ss.nms_types:
+    # NOx
+    sum_nox = avg_nox.filter(regex=types.lower()).sum(axis=1)
+    nox_total = sum_nox.sum()
+    df_presentation_air.loc[0, types] = nox_total
+    # PM
+    sum_pm = avg_pm.filter(regex=types.lower()).sum(axis=1)
+    pm_total = sum_pm.sum()
+    df_presentation_air.loc[1, types] = pm_total
+
 # Create table with total values
 df_presentation_total = pd.DataFrame(columns=["Total", "Tank-to-Wheel", "Well-to-Tank", "Life-cyle"])
 df_presentation_total.insert(0, "Estimated CO2 change",["kg/day", "ton/year", "ton/year/1,000 inhabitants"])
@@ -513,6 +593,16 @@ df_presentation_total[cols_to_shift] = df_presentation_total[cols_to_shift].appl
     axis=1
 )
 
+# Create table with total values NOx and PM
+df_presentation_total_air = pd.DataFrame(columns=["NOx", "PM"])
+df_presentation_total_air.insert(0, "Estimated air quality emission change",["g/day", "kg/year", "kg/year/1,000 inhabitants"])
+for i in range(0,2):
+    df_presentation_total_air.iloc[0,i+1] = df_presentation_air.iloc[i, 1:].sum()
+
+df_presentation_total_air.iloc[1,1:] = df_presentation_total_air.iloc[0,1:] / 1000 * 365.25
+df_presentation_total_air.iloc[2,1:] = df_presentation_total_air.iloc[1,1:] / ss.inhabitants * 1000
+
+
 #### Presentation table configuration before presenting
 # Function to color cells based on value red when positive, green when negative, yellow when zero
 def color_positive_negative(val):
@@ -525,11 +615,18 @@ def color_positive_negative(val):
 
 # Apply style to all numeric columns
 styled_df_presentation = df_presentation.style.map(color_positive_negative, subset=df_presentation.columns[1:])
+styled_df_presentation_air = df_presentation_air.style.map(color_positive_negative, subset=df_presentation_air.columns[1:])
 styled_df_presentation_total = df_presentation_total.style.map(color_positive_negative, subset=df_presentation_total.columns[1:])
+styled_df_presentation_total_air = df_presentation_total_air.style.map(color_positive_negative, subset=df_presentation_total_air.columns[1:])
 
 column_config = {
     col: st.column_config.NumberColumn(col, format="%.2f")
     for col in df_presentation.columns[1:]
+}
+
+column_config_air = {
+    col: st.column_config.NumberColumn(col, format="%.2f")
+    for col in df_presentation_air.columns[1:]
 }
 
 column_config_total = {
@@ -537,9 +634,14 @@ column_config_total = {
     for col in df_presentation_total.columns[1:]
 }
 
+column_config_total_air = {
+    col: st.column_config.NumberColumn(col, format="%.2f")
+    for col in df_presentation_total_air.columns[1:]
+}
+
 # present result tables
 # Title and explanation
-st.header("Estimated Emission Change")
+st.header("Results of the analysis")
 st.write("""The tables below show the emission changes due to the introduction of shared mobility. The first table shows the changes per shared mode,
          the second table the total values per day, year and per 1000 inhabitants.
          :green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.
@@ -552,9 +654,21 @@ st.dataframe(styled_df_presentation,
              use_container_width=True
              )
 
+st.dataframe(styled_df_presentation_air,
+             hide_index=True,
+             column_config=column_config_air,
+             use_container_width=True
+             )
+
 st.subheader("Total estimated emission changes")
 st.dataframe(styled_df_presentation_total,
              hide_index=True,
              column_config=column_config_total,
+             use_container_width=True
+             )
+
+st.dataframe(styled_df_presentation_total_air,
+             hide_index=True,
+             column_config=column_config_total_air,
              use_container_width=True
              )

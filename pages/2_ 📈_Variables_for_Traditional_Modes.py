@@ -58,13 +58,13 @@ ss.var_general_edited = st.data_editor(ss.var_general,
                                                 label="User Input",
                                                 min_value=0,
                                                 step=0.001,
-                                                format="%.2f"
+                                                format="%.1f"
                                             ),
                                             "default": st.column_config.NumberColumn(
                                                 label="Default Value",
                                                 min_value=0,
                                                 step=0.001,
-                                                format="%.2f"
+                                                format="%.1f"
                                             )
                                         },
                                         disabled=["variable", "default"],

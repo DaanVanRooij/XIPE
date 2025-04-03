@@ -46,12 +46,16 @@ st.write("Published: 2024")
 # Load country specific data from csv's
 car_co2 = pd.read_csv("data/co2_emissions_new_cars_EU.csv")
 car_acea = pd.read_csv("data/acea_vehicle_data.csv")
+car_air_emission = pd.read_csv("data/air_emission_limits.csv")
 
 if "car_co2" not in ss:
     ss.car_co2 = car_co2
 
 if "car_acea" not in ss:
     ss.car_acea = car_acea
+
+if car_air_emission not in ss:
+    ss.car_air_emission = car_air_emission
 
 #####################################################################################################################################################################
 ###### initialise general session states ###########################################################################################################################
@@ -60,7 +64,7 @@ if "car_acea" not in ss:
 
 # Create list of all EU countries and manufacturing years from data list and save 
 # as session state to be able access it in all pages
-country_list = car_co2.columns.tolist()[1:]
+country_list = car_co2.columns.tolist()[1:-1]
 year_list = car_co2[car_co2.columns[0]]
 
 if "country_list" not in ss:
@@ -122,8 +126,8 @@ if "inhabitants" not in ss:
     ss.inhabitants = 1
 
 # average car year of the fleet
-if "car_year" not in ss:
-    ss.car_year = year_list[0]
+#if "car_year" not in ss:
+#    ss.car_year = year_list[0]
 
 #percentage of the fleet that is diesel
 if "diesel_perc" not in ss:
@@ -132,9 +136,9 @@ if "diesel_perc" not in ss:
 # General Variables DataDrame
 if 'var_general' not in ss:
     ss.var_general = pd.DataFrame({
-        "variable": ["Average CO2 emission intensity for electricity generation (gCO2/kWh)", "Well-to-Tank emissions fraction of Well-to-Wheel emissions ICE cars (%)"],
-        "user_input": [0, 0],
-        "default": [96.0, 20.0]
+        "variable": ["Average CO2 emission intensity for electricity generation (gCO2/kWh)", "Well-to-Tank emissions fraction of Well-to-Wheel emissions ICE cars (%)", "Average age of the car fleet (years)", "Percentage of petrol cars in the current fleet (%)","Percentage of diesel cars in the current fleet (%)", "Percentage of electric cars in the current fleet (%)"],
+        "user_input": [0, 0, 0, 0, 0, 0],
+        "default": [96.0, 20.0, 9.3, 42.2, 49.9, 7.8]
     })
     ss.var_general_edited = ss.var_general.copy()
 

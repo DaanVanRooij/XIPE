@@ -1,4 +1,4 @@
-Country,Average_age_acea,Car_year,perc_petrol,perc_diesel,perc_ev
+country,average_age_acea,car_year,perc_petrol,perc_diesel,perc_ev
 Austria,9.3,2016,0.422,0.499,0.078
 Belgium,9.9,2015,0.541,0.347,0.102
 Croatia,13.4,2012,0.381,0.56,0.027
@@ -24,3 +24,5 @@ Slovakia,15.1,2010,0.493,0.436,0.034
 Slovenia,11.5,2014,0.457,0.5,0.035
 Spain,14.2,2011,0.394,0.542,0.061
 Sweden,11,2014,0.483,0.323,0.152
+Bulgaria,12.5,2012,0.50,0.395,0.071
+Malta,12.5,2012,0.50,0.395,0.071
