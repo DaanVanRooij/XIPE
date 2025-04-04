@@ -48,6 +48,7 @@ st.warning("Don't forget to click the save buttons to save the data in the table
 
 # Display General variables table
 st.subheader("General variables")
+ss.var_general["user_input"].astype(float)
 ss.var_general_edited = st.data_editor(ss.var_general, 
                                         hide_index=True, 
                                         column_config={
@@ -56,22 +57,27 @@ ss.var_general_edited = st.data_editor(ss.var_general,
                                             ),
                                             "user_input": st.column_config.NumberColumn(
                                                 label="User Input",
-                                                min_value=0,
+                                                min_value=0.0,
                                                 step=0.001,
-                                                format="%.1f"
+                                                format="%.2f"
                                             ),
                                             "default": st.column_config.NumberColumn(
                                                 label="Default Value",
-                                                min_value=0,
+                                                min_value=0.0,
                                                 step=0.001,
-                                                format="%.1f"
+                                                format="%.2f"
                                             )
                                         },
                                         disabled=["variable", "default"],
                                         use_container_width=True
                                         )
 
-st.button("Save General Variables", type="primary", on_click=save_edits, args=(ss.var_general, ss.var_general_edited)) 
+st.button("Save General Variables", type="primary", on_click=save_edits, args=(ss.var_general, ss.var_general_edited))
+
+# calculate construction year of average car, used to find average emission values from country constants and save in session state
+if ss.var_general.at[2, "user_input"] != 0.0:
+    ss.car_year = round(2024 - ss.var_general.at[2, "user_input"],0)
+
 
 # Display private car variables table
 st.subheader("Private Car (per vehicle km)")

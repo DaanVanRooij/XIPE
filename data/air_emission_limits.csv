@@ -1,6 +1,4 @@
-manufacturing _year,euro_norm,diesel_nox,diesel_pm,petrol_nox,petrol_pm
-2025,7,0.06,0.0045,0.06,0.0045
-2024,6e,0.08,0.0045,0.06,0.0045
+year,euro_norm,diesel_nox,diesel_pm,petrol_nox,petrol_pm
 2023,6d,0.08,0.0045,0.06,0.0045
 2022,6d,0.08,0.0045,0.06,0.0045
 2021,6d,0.08,0.0045,0.06,0.0045

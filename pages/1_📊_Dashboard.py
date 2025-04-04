@@ -96,12 +96,6 @@ perc_ev = ss.car_acea.loc[ss.car_acea["country"] == ss.country, "perc_ev"].value
 # other is all minus petrol, diesel and EV
 perc_other = 1-perc_petrol-perc_diesel-perc_ev
 
-# calculate construction year of average car, used to find average emission values from country constants
-if ss.var_general.at[2, "user_input"] == 0.0:
-    car_year = round(2024 - ss.var_general.at[2, "default"],0)
-else:
-    car_year = round(2024 - ss.var_general.at[2, "user_input"],0)
-
 #collect data for pie chart
 pie_data = {"Fuel": ["Petrol", "Diesel", "EV", "Other"], "Values":[perc_petrol, perc_diesel, perc_ev, perc_other]}
 
@@ -246,9 +240,9 @@ def save_edits():
     ss.shared_modes = ss.shared_modes_edited.copy()
 
 
-###################################################################################
-######### Number of NMS and EV percentage editable table ##########################
-###################################################################################
+############################################################################################################################
+######### Number of NMS and EV percentage editable table ###################################################################
+############################################################################################################################
 
 ### NMS input table
 # Title and explanation
@@ -284,9 +278,9 @@ ss.shared_modes_edited = st.data_editor(ss.shared_modes,
 
 st.button("Save Data", type="primary", on_click=save_edits)
 
-##########################################################################################
-###################### Change variable default variables #################################
-##########################################################################################
+###################################################################################################################################
+###################### Change variable default variables ##########################################################################
+###################################################################################################################################
 
 ### General Variables
 # get default values based on country selected in dashboard and include in dataframe
@@ -298,23 +292,41 @@ ss.var_general.at[4, "default"] = perc_diesel * 100
 ss.var_general.at[5, "default"] = perc_ev * 100
 
 ### Private Car Variables
-# get default value based on country and average car year selected in dashboard
+# get default CO2 emission factor based on country and average car year selected in dashboard
+# check if there is user input
+if ss.var_general.at[2, "user_input"] == 0.0:
+    ss.car_year = round(2024 - car_age,0)
+
 # get index by substracting selected year by max year
 # values <= 2020 are NEDC values and > 2020 are WLTP measurements
 # NEDC and WLTP values underestimate real world CO2 emission by resepectively 40% and 14%, this is accounted for in the calculation below
-
-default_co2_car = ss.car_co2.loc[(max(year_list) - car_year) ,ss.country]
-if car_year <= 2020:
+default_co2_car = ss.car_co2.loc[(max(year_list) - ss.car_year) ,ss.country]
+if ss.car_year <= 2020:
     default_co2_car = default_co2_car *1.4
 else:
     default_co2_car = default_co2_car * 1.14
 
+
+# get default NOx and PM emission factor based on country and share of fuels
+# get petrol and diesel factors from air emissions based on year
+petrol_nox = ss.car_air_emission.loc[(max(year_list) - ss.car_year) ,"petrol_nox"]
+diesel_nox = ss.car_air_emission.loc[(max(year_list) - ss.car_year) ,"diesel_nox"]
+petrol_pm = ss.car_air_emission.loc[(max(year_list) - ss.car_year) ,"petrol_pm"]
+diesel_pm = ss.car_air_emission.loc[(max(year_list) - ss.car_year) ,"diesel_pm"]
+
+# defaul emission factor based on percentage of fuel used in fleet, with EV emittion zero so not included in calculation, other fuels are disregarded as well
+# e.g. fleet = 76.5% petrol, 8.4% diesel, 14% EV -->default_nox_car = 0.765 * petrol_nox + 0.084 * diesel nox + 0 * 14% 
+default_nox_car = (perc_petrol * petrol_nox + perc_diesel * diesel_nox) * 1000 #calculate default NOx emission factor in mg/km
+default_pm_car = (perc_petrol * petrol_pm + perc_diesel * diesel_pm) * 1000 #calculate default PM emission factor in mg/km
+
 # set the default value based on country default when country is changed
 ss.var_private_car.at[0, "default"] = default_co2_car
+ss.var_private_car.at[1, "default"] = default_nox_car
+ss.var_private_car.at[2, "default"] = default_pm_car
 
-##########################################################################################
-################################ Present Results #########################################
-##########################################################################################
+###################################################################################################################################
+################################ Present Results ##################################################################################
+###################################################################################################################################
 
 #######  Set up calculation DataFrames ####### 
 ###### Create one table with all NMS Variables ######
@@ -646,7 +658,7 @@ st.write("""The tables below show the emission changes due to the introduction o
          the second table the total values per day, year and per 1000 inhabitants.
          :green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.
          \nPlease remember, you can recalculate the emission changes using your own emission factors or other variables by accessing the 'Variables' pages accessible on the left!""")
-st.subheader("Estimated emission change per shared mode")
+st.subheader(f"Estimated emission change per shared mode in {ss.city_name}")
 
 st.dataframe(styled_df_presentation,
              hide_index=True,
@@ -660,7 +672,7 @@ st.dataframe(styled_df_presentation_air,
              use_container_width=True
              )
 
-st.subheader("Total estimated emission changes")
+st.subheader(f"Estimated total emission change in {ss.city_name}")
 st.dataframe(styled_df_presentation_total,
              hide_index=True,
              column_config=column_config_total,

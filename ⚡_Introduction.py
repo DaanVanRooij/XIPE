@@ -54,7 +54,7 @@ if "car_co2" not in ss:
 if "car_acea" not in ss:
     ss.car_acea = car_acea
 
-if car_air_emission not in ss:
+if "car_air_emission" not in ss:
     ss.car_air_emission = car_air_emission
 
 #####################################################################################################################################################################
@@ -125,19 +125,19 @@ if "country" not in ss:
 if "inhabitants" not in ss:
     ss.inhabitants = 1
 
-# average car year of the fleet
-#if "car_year" not in ss:
-#    ss.car_year = year_list[0]
+# average car year of the fleet, default is Austria as it is the default country
+if "car_year" not in ss:
+    ss.car_year = 2015
 
 #percentage of the fleet that is diesel
-if "diesel_perc" not in ss:
-    ss.diesel_perc = 0
+#if "diesel_perc" not in ss:
+#    ss.diesel_perc = 0
 
 # General Variables DataDrame
 if 'var_general' not in ss:
     ss.var_general = pd.DataFrame({
         "variable": ["Average CO2 emission intensity for electricity generation (gCO2/kWh)", "Well-to-Tank emissions fraction of Well-to-Wheel emissions ICE cars (%)", "Average age of the car fleet (years)", "Percentage of petrol cars in the current fleet (%)","Percentage of diesel cars in the current fleet (%)", "Percentage of electric cars in the current fleet (%)"],
-        "user_input": [0, 0, 0, 0, 0, 0],
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
         "default": [96.0, 20.0, 9.3, 42.2, 49.9, 7.8]
     })
     ss.var_general_edited = ss.var_general.copy()
@@ -149,7 +149,7 @@ if 'var_general' not in ss:
 if 'var_private_car' not in ss:
     ss.var_private_car = pd.DataFrame({
         "variable": ss.lst_var_trad[0:3] + ss.lst_var_trad[4:], #linked to variable list
-        "user_input": [0, 0, 0, 0],
+        "user_input": [0.0, 0.0, 0.0, 0.0],
         "default": [118.6, 69.00, 4.5, 55.00]
     })
     ss.var_private_car_edited = ss.var_private_car.copy()
@@ -159,7 +159,7 @@ if 'var_private_car' not in ss:
 if 'var_road' not in ss:
     ss.var_road = pd.DataFrame({
         "variable": ss.lst_var_trad[0:3] + ss.lst_var_trad[4:], #linked to variable list
-        "user_input": [0, 0, 0, 0],
+        "user_input": [0.0, 0.0, 0.0, 0.0],
         "default": [63.00, 30.67, 0.67, 20.00]
     })
     ss.var_road_edited = ss.var_road.copy()
@@ -168,7 +168,7 @@ if 'var_road' not in ss:
 if 'var_rail' not in ss:
     ss.var_rail = pd.DataFrame({
         "variable": ss.lst_var_trad[3:], #linked to variable list
-        "user_input": [0, 0],
+        "user_input": [0.0, 0.0],
         "default": [0.09, 13.00]
     })
     ss.var_rail_edited = ss.var_rail.copy()
@@ -177,7 +177,7 @@ if 'var_rail' not in ss:
 if 'var_act' not in ss:
     ss.var_act = pd.DataFrame({
         "variable": ss.lst_var_act, #linked to variable list
-        "user_input": [0, 0],
+        "user_input": [0.0, 0.0],
         "default": [17.00, 0.00]
     })
     ss.var_act_edited = ss.var_act.copy()
@@ -199,8 +199,8 @@ if 'shared_modes' not in ss:
 if 'var_nms_ICEcar' not in ss:
     ss.var_nms_ICEcar = pd.DataFrame({
         "variable": (ss.lst_var_nms[:4] + ss.lst_var_nms[5:]), #linked to variable list
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_ICEcar_edited = ss.var_nms_ICEcar.copy()
 
@@ -208,8 +208,8 @@ if 'var_nms_ICEcar' not in ss:
 if 'var_nms_ICEmoped' not in ss:
     ss.var_nms_ICEmoped = pd.DataFrame({
         "variable": (ss.lst_var_nms[:4] + ss.lst_var_nms[5:]), #linked to variable list
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.001] #last default 0.001 to prevent error in table rendering, replaced automatically
     })
     ss.var_nms_ICEmoped_edited = ss.var_nms_ICEmoped.copy()
 
@@ -217,8 +217,8 @@ if 'var_nms_ICEmoped' not in ss:
 if 'var_nms_bike' not in ss:
     ss.var_nms_bike = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[5:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_bike_edited = ss.var_nms_bike.copy()
 
@@ -226,8 +226,8 @@ if 'var_nms_bike' not in ss:
 if 'var_nms_ev' not in ss:
     ss.var_nms_ev = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[4:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_ev_edited = ss.var_nms_ev.copy()
 
@@ -235,8 +235,8 @@ if 'var_nms_ev' not in ss:
 if 'var_nms_ebike' not in ss:
     ss.var_nms_ebike = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[4:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_ebike_edited = ss.var_nms_ebike.copy()
 
@@ -244,8 +244,8 @@ if 'var_nms_ebike' not in ss:
 if 'var_nms_emoped' not in ss:
     ss.var_nms_emoped = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[4:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0.1, 0.1, 0.1, 0.1, 0.1, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #first defaults 0.01 to prevent error in table rendering, replaced automatically
     })
     ss.var_nms_emoped_edited = ss.var_nms_emoped.copy()
 
@@ -253,8 +253,8 @@ if 'var_nms_emoped' not in ss:
 if 'var_nms_escooter' not in ss:
     ss.var_nms_escooter = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[4:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0.2, 0.2, 2, 2, 0, 0, 0.0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] #first defaults 0.02 to prevent error in table rendering, replaced automatically
     })
     ss.var_nms_escooter_edited = ss.var_nms_escooter.copy()
 
@@ -262,8 +262,8 @@ if 'var_nms_escooter' not in ss:
 if 'var_nms_other' not in ss:
     ss.var_nms_other = pd.DataFrame({
         "variable": (ss.lst_var_nms[:4] + ss.lst_var_nms[5:]), #linked to variable list
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_other_edited = ss.var_nms_other.copy()
 
@@ -271,7 +271,7 @@ if 'var_nms_other' not in ss:
 if 'var_nms_eother' not in ss:
     ss.var_nms_eother = pd.DataFrame({
         "variable": (ss.lst_var_nms[:1] + ss.lst_var_nms[4:]), #linked to variable list,
-        "user_input": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "default": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        "user_input": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "default": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     })
     ss.var_nms_other_edited = ss.var_nms_eother.copy()
