@@ -114,7 +114,7 @@ if "trad_types" not in ss:
     ss.trad_types = ["private_car", "pt_road", "pt_rail", "cycling", "walking"]
 
 if "nms_types" not in ss:
-    ss.nms_types = ["Car", "Bike", "Moped", "eScooter", "Other"]
+    ss.nms_types = ["Car", "Bike", "Moped", "e-Scooter", "Other"]
 
 ### session states for dashboard inputs
 # country

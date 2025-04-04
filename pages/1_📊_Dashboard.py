@@ -118,7 +118,7 @@ with a:
         st.metric(f"**The average car age in {ss.country} is**", f"{car_age} years")
     st.write("Replacing an older car fleet with new shared mobility modes has a higher impact on the emissions because older cars are in "
     "general more polluting.")
-    st.markdown("The type of fuel is used to estimate savings in NOx en PM emissions. As with all variables, these can be"
+    st.markdown("The distribution of vehicles by the type of fuel is used to estimate savings air quality emissions. As with all variables, these can be "
     "replaced with your own values in the 'Variables' pages.")
 with b:
     st.plotly_chart(fig)
@@ -248,7 +248,7 @@ def save_edits():
 # Title and explanation
 st.header("Shared Mobility Services")
 st.write("""Please fill in the number of shared vehicles per mode and the percentage of them that is electric. 
-         e-Scooters will always be electric and are therefore prefilled with 100%. Clink the Save Data button to 
+         e-Scooters will always be electric and are therefore prefilled with 100%. Click the Save Data button to 
          save the data in the table""")
          
 ss.shared_modes_edited = st.data_editor(ss.shared_modes, 
@@ -654,10 +654,12 @@ column_config_total_air = {
 # present result tables
 # Title and explanation
 st.header("Results of the analysis")
-st.write("""The tables below show the emission changes due to the introduction of shared mobility. The first table shows the changes per shared mode,
-         the second table the total values per day, year and per 1000 inhabitants.
-         :green-background[Green cells] are a decrease in emissions, :red-background[red cells] are an increase in emissions and :orange-background[yellow cells] have no changes.
-         \nPlease remember, you can recalculate the emission changes using your own emission factors or other variables by accessing the 'Variables' pages accessible on the left!""")
+st.write("""The tables below show the emission changes due to the introduction of shared mobility. The first table shows the changes 
+         per shared mobility service and the second table the total emission changes in the city per day, year and per year per 1000 inhabitants.
+         :green-background[Green cells] indicate a reduction in emissions, :red-background[red cells] indicate an increase in emissions and 
+         :orange-background[yellow cells] indicate no changes. 
+         \nPlease remember, you can recalculate the emission changes using your own emission factors or other variables by accessing the 'Variables' 
+         pages accessible on the left!""")
 st.subheader(f"Estimated emission change per shared mode in {ss.city_name}")
 
 st.dataframe(styled_df_presentation,
