@@ -39,8 +39,8 @@ st.write(
 #GEMINI and EU logo after text of screen
 st.image("images/GEMINI_BANNER2.png",use_column_width="auto")
 
-st.write("Version: 1.0")
-st.write("Published: 2024")
+st.write("Version: beta")
+st.write("Published: 2025")
 
 
 # Load country specific data from csv's
