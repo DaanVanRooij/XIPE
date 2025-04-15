@@ -332,7 +332,7 @@ ss.var_private_car.at[2, "default"] = default_pm_car
 ###### Create one table with all NMS Variables ######
 
 # Dictionary with all NMS variable dataframes
-var_nms_all = {"ICEcar":ss.var_nms_ICEcar, "ICEmoped":ss.var_nms_ICEmoped, "bike":ss.var_nms_bike, "ecar":ss.var_nms_ev, "ebike":ss.var_nms_ebike, "emoped":ss.var_nms_emoped, "escooter":ss.var_nms_escooter, "other":ss.var_nms_other, "eother":ss.var_nms_eother}
+var_nms_all = {"ICEcar":ss.var_nms_ICEcar, "ICEmoped":ss.var_nms_ICEmoped, "bike":ss.var_nms_bike, "ecar":ss.var_nms_ev, "ebike":ss.var_nms_ebike, "emoped":ss.var_nms_emoped, "e-scooter":ss.var_nms_escooter, "other":ss.var_nms_other, "eother":ss.var_nms_eother}
 
 # Create a master template DataFrame with all unique variable names
 df_template = pd.DataFrame({"variable": ss.lst_var_nms})  # Master template
@@ -417,12 +417,12 @@ number_other = ss.shared_modes.num_veh[4] * ((100-ss.shared_modes.perc_EV[4])/10
 number_eother = ss.shared_modes.num_veh[4] * (ss.shared_modes.perc_EV[4]/100)
 
 # save all vehicle number variables in a dictionary
-numbers_nms = {"variable": "Number of vehicles","ICEcar": number_ICEcar, "ICEmoped": number_ICEmoped, "bike": number_bike, "ecar": number_ecar, "ebike": number_ebike, "emoped": number_emoped, "escooter": number_escooter, "other": number_other, "eother": number_eother}
+numbers_nms = {"variable": "Number of vehicles","ICEcar": number_ICEcar, "ICEmoped": number_ICEmoped, "bike": number_bike, "ecar": number_ecar, "ebike": number_ebike, "emoped": number_emoped, "e-scooter": number_escooter, "other": number_other, "eother": number_eother}
 
 # Add the dictionary to the top row of the nms variable data frame
 df_numbers_nms = pd.DataFrame([numbers_nms])
 df_var_nms = pd.concat([df_numbers_nms, df_var_nms], ignore_index=True)
-
+df_var_nms
 
 #######  Result calculations ####### 
 ####### CO2 use phase #########
@@ -555,17 +555,24 @@ avg_pm.loc[len(avg_pm)] = avg_pm_nms
 
 #######  Table presentation ####### 
 
+
 # sum the emission changes over the base nms types
 df_presentation = pd.DataFrame(columns=ss.nms_types)
 df_presentation.insert(0, "Estimated CO2 change",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle emissions (kg/day)", "TOTAL (kg/day)"])
 
+df_results
+
 for types in ss.nms_types:
+    types
     # CO2 use phase
+    st.write(df_results.filter(regex=types.lower()))
     sum = df_results.filter(regex=types.lower()).sum(axis=1)
+    #sum
     ttw_total = sum.iloc[0] + sum.iloc[2]
     wtt_total = sum.iloc[1] + sum.iloc[3]
     df_presentation.loc[0, types] = ttw_total
     df_presentation.loc[1, types] = wtt_total
+    df_presentation
     # CO2 LCA
     sum_lca = avg_co2_lca.filter(regex=types.lower()).sum(axis=1)
     lca_total = sum_lca.sum()

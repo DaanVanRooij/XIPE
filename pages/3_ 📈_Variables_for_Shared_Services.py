@@ -40,7 +40,7 @@ def save_edits(old_ss, edited_ss):
 
 #Intoduction text
 st.header("Shared Modes Variables")
-st.write("""On this page the variables and factors of the shared services are displayed per mode. All variables on this page have default 
+st.write("""On this page the variables and factors of the shared mobility services are displayed per service. All variables on this page have default 
          values displayed. If the user has specific variable values they can fill these in the User Input column, this will override 
          the default values in the calculations.
          \n**Calculations will use the whole User Input column. Therefore, when using user input be sure to fill in all user input cells, 
