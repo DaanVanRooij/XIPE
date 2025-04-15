@@ -422,7 +422,6 @@ numbers_nms = {"variable": "Number of vehicles","ICEcar": number_ICEcar, "ICEmop
 # Add the dictionary to the top row of the nms variable data frame
 df_numbers_nms = pd.DataFrame([numbers_nms])
 df_var_nms = pd.concat([df_numbers_nms, df_var_nms], ignore_index=True)
-df_var_nms
 
 #######  Result calculations ####### 
 ####### CO2 use phase #########
@@ -560,19 +559,15 @@ avg_pm.loc[len(avg_pm)] = avg_pm_nms
 df_presentation = pd.DataFrame(columns=ss.nms_types)
 df_presentation.insert(0, "Estimated CO2 change",["Tank-to-Wheel (kg/day)", "Well-to-Tank (kg/day)", "Additional life-cycle emissions (kg/day)", "TOTAL (kg/day)"])
 
-df_results
 
 for types in ss.nms_types:
-    types
     # CO2 use phase
-    st.write(df_results.filter(regex=types.lower()))
     sum = df_results.filter(regex=types.lower()).sum(axis=1)
     #sum
     ttw_total = sum.iloc[0] + sum.iloc[2]
     wtt_total = sum.iloc[1] + sum.iloc[3]
     df_presentation.loc[0, types] = ttw_total
     df_presentation.loc[1, types] = wtt_total
-    df_presentation
     # CO2 LCA
     sum_lca = avg_co2_lca.filter(regex=types.lower()).sum(axis=1)
     lca_total = sum_lca.sum()
